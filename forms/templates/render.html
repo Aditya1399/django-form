@@ -1,0 +1,93 @@
+<!-- myapp/templates/myapp/task_form.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Task Form</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Task Entry</h1>
+    <form method="POST">
+        {% csrf_token %}
+    
+        <div>
+            <label for="remotasks_id">Remotasks ID:</label>
+            <input type="text" id="remotasks_id" name="remotasks_id" required>
+        </div>
+        <div>
+            <label for="grt_id">GRT ID:</label>
+            <input type="text" id="grt_id" name="grt_id" required>
+        </div>
+        <div>
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" readonly>
+        </div>
+
+        <div>
+            <label for="team lead">Team Lead</label>
+            <input type="text" id="team_lead" name="team_lead" readonly>
+        </div>
+        <div>
+            <label for="project">Project:</label>
+            <select name="project" id="project">
+                {% for p in form.fields.project.choices %}
+                    <option value="{{ p.0 }}">{{ p.1 }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div>
+            <label for="able_to_task">Able to Task:</label>
+            <input type="checkbox" id="able_to_task" name="able_to_task">
+        </div>
+
+        <p>Mark training status for the selected project:</p>
+        <div>
+            <label for="trained">Trained:</label>
+            <input type="radio" id="trained" name="trained" value="True"> Yes
+            <input type="radio" id="not_trained" name="trained" value="False"> No
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <h2>Current Time: {{ current_time }}</h2>
+    <h2>Current Date: {{ current_date }}</h2>
+
+    <script>
+        $(document).ready(function() {
+            $('#grt_id').on('input', function() {
+                var teamId = $(this).val();
+                if (teamId) {
+                    $.ajax({
+                        url: '{% url "get_team_member_details" %}',
+                        data: {
+                            'id': teamId
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            if (data.error) {
+                                $('#name').val('');
+                                $('#team_lead').val('');
+                            } else {
+                                $('#name').val(data.name);
+                                $('#team_lead').val(data.team_lead);
+                            }
+                        },
+                        error: function(xhr, textStatus, errorThrown) {
+                            $('#name').val('');
+                            $('#team_lead').val('');
+
+                        }
+                    });
+                } else {
+                    // Clear fields if no Team ID
+                    $('#name').val('');
+                    $('#team_lead').val('');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

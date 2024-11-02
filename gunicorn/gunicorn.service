@@ -1,0 +1,13 @@
+[Unit]
+Description= gunicorn daemon
+Required= gunicorn.socket
+After= network.target
+[Service]
+User=ubuntu
+Group= www-data
+WorkingDirectory=C:/Users/Aditya/OneDrive/Desktop/django/
+ExecStart= /home/ubuntu/env/bin/gunicorn --access-logfile - --workers 3 --bind unix:/home/
+ubuntu/django/myproject/myproject.sock myproject.wsgi:application
+
+[Install]
+WantedBy=multi-user.target
