@@ -11,6 +11,6 @@ commands:
 post_build:
 commands:
 - echo Build completed on 'date'
-artificats:
+artifacts:
 files:
 - '**/*'
