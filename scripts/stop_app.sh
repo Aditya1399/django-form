@@ -1,4 +1,4 @@
 set -e 
 echo "Stopping the application"
-pskill -f "gunicorn"
+pkill -f "gunicorn"
 echo "Application stopped successfully"
